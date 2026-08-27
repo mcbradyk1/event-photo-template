@@ -38,8 +38,7 @@ jobs:
         env:
           BOOTH_DRIVE_FOLDER_ID: ${{ secrets.BOOTH_DRIVE_FOLDER_ID }}
           BOOTH_DRIVE_SA_FILE: /tmp/sa.json
-        working-directory: scripts
-        run: python sync_booth.py
+        run: python scripts/sync_gallery.py
 
       - name: Commit new thumbnails + manifest
         run: |
