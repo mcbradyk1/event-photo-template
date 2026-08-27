@@ -96,6 +96,41 @@ endpoints: { photoUpload: "https://script.google.com/…/exec" },  // from step 
 
 Commit. That rebrands every page and wires up uploads.
 
+### Changing fonts (optional)
+
+The default titles use **Alex Brush** (bundled locally in `fonts/`). To use a
+different font for a specific event, pull it from **Google Fonts by name** — no
+files to download. In `config.js`'s `theme` block:
+
+1. Add the family name(s) to `googleFonts`.
+2. Reference them in `scriptFont` (titles) and/or `bodyFont` (everything else).
+
+```js
+theme: {
+  googleFonts: ["Playfair Display", "Lora"],          // pulled from Google Fonts
+  scriptFont:  "'Playfair Display', Georgia, serif",  // titles
+  bodyFont:    "'Lora', Georgia, serif",              // body text
+  // ...colors unchanged
+}
+```
+
+**Two rules:** (a) any family named in `scriptFont`/`bodyFont` must also appear
+in `googleFonts` — *except* system fonts like Georgia/Arial, which need no
+entry; (b) spell the family exactly as shown on
+[fonts.google.com](https://fonts.google.com). Leave `googleFonts: []` to keep
+the local Alex Brush default (zero extra network requests).
+
+**Wedding-friendly pairings** (title / body — copy a row):
+
+| Vibe | `scriptFont` (title) | `bodyFont` (body) | `googleFonts` |
+|------|----------------------|-------------------|---------------|
+| Default (bundled) | `'Alex Brush', cursive` | `'Georgia', serif` | `[]` |
+| Classic & elegant | `'Playfair Display', serif` | `'Lora', serif` | `["Playfair Display","Lora"]` |
+| Romantic script | `'Great Vibes', cursive` | `'EB Garamond', serif` | `["Great Vibes","EB Garamond"]` |
+| Modern & clean | `'Cormorant Garamond', serif` | `'Montserrat', sans-serif` | `["Cormorant Garamond","Montserrat"]` |
+| Soft & handwritten | `'Parisienne', cursive` | `'Nunito Sans', sans-serif` | `["Parisienne","Nunito Sans"]` |
+| Bold & timeless | `'Cinzel', serif` | `'Crimson Text', serif` | `["Cinzel","Crimson Text"]` |
+
 ## 6. Go live
 
 1. The **Deploy** workflow runs on push; wait for it to finish (Actions tab).
@@ -131,6 +166,7 @@ account, PAT, and master `code.gs` stay put for the next event.
 [ ] Apps Script: deploy Web app (Me / Anyone) → copy /exec URL
 [ ] Apps Script: run installGalleryFlushTrigger once
 [ ] config.js: eventName, subtitle, eventDate, siteDomain, colors, endpoint
+[ ] (optional) config.js: googleFonts + scriptFont/bodyFont
 [ ] Deploy finished, first sync run, test photo uploaded
 [ ] photoboothSign.html printed
 ```
