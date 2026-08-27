@@ -32,6 +32,27 @@
   setVar('--cfg-text',        T.text);
   setVar('--cfg-muted',       T.muted);
 
+  /* ---- Optional: load fonts from Google Fonts by name ------------------ */
+  var gfonts = T.googleFonts || [];
+  if (gfonts.length) {
+    var fam = gfonts.map(function (f) {
+      return 'family=' + encodeURIComponent(f).replace(/%20/g, '+');
+    }).join('&');
+  
+    var pre1 = document.createElement('link');
+    pre1.rel = 'preconnect'; pre1.href = 'https://fonts.googleapis.com';
+    var pre2 = document.createElement('link');
+    pre2.rel = 'preconnect'; pre2.href = 'https://fonts.gstatic.com';
+    pre2.crossOrigin = 'anonymous';
+    var css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.href = 'https://fonts.googleapis.com/css2?' + fam + '&display=swap';
+  
+    document.head.appendChild(pre1);
+    document.head.appendChild(pre2);
+    document.head.appendChild(css);
+  }
+
   /* ---- Value lookup for data-brand keys --------------------------------- */
   var txt = C.text || {};
   var VALUES = {
