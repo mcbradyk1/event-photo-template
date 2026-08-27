@@ -41,12 +41,11 @@ jobs:
         env:
           BOOTH_DRIVE_FOLDER_ID: ${{ secrets.BOOTH_DRIVE_FOLDER_ID }}
           BOOTH_DRIVE_SA_FILE: /tmp/sa.json
-        working-directory: scripts
         run: |
           if [ "${{ inputs.dry_run }}" = "true" ]; then
-            python prune_booth.py --dry-run
+            python scripts/prune_gallery.py --dry-run
           else
-            python prune_booth.py
+            python scripts/prune_gallery.py
           fi
 
       - name: Commit pruned manifest
