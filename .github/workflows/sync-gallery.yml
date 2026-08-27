@@ -38,8 +38,7 @@ jobs:
         env:
           GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
           GDRIVE_SA_FILE: /tmp/sa.json
-        working-directory: scripts
-        run: python sync_gallery.py
+        run: python scripts/sync_gallery.py
 
       - name: Commit new thumbnails + manifest
         run: |
