@@ -10,6 +10,10 @@ folder, fully isolated from every other event.
 > Replace **`eventname`** below with the actual slug you want in the URL — keep
 > it lowercase, no spaces (e.g. `smith-wedding`, `jones-grad-2027`).
 
+> **Photo booth?** The steps below cover a normal photos-only event. If this
+> event also has a photo booth, do the **[Photo booth add-on](#photo-booth-add-on-optional)**
+> section at the end too.
+
 ---
 
 ## 1. Create the repo from the template
@@ -28,9 +32,6 @@ The site will live at `https://mcbradyk1.github.io/eventname/` once it deploys.
 3. Open the folder and copy its **ID** from the URL:
    `drive.google.com/drive/folders/`**`<THIS_PART>`**.
 
-> Optional booth: if this event has a photo booth, make a **second** folder the
-> same way and note its ID too.
-
 ## 3. Add the repo secrets
 
 In the new repo: **Settings → Secrets and variables → Actions → New repository
@@ -40,9 +41,6 @@ secret.** Add:
 |--------|-------|
 | `GDRIVE_FOLDER_ID` | the folder ID from step 2 |
 | `GDRIVE_SA_FILE` | paste the **same** service-account JSON you use for every event |
-
-Booth only (if used): also add `BOOTH_DRIVE_FOLDER_ID` and `BOOTH_DRIVE_SA_FILE`
-(the SA JSON is the same file again).
 
 ## 4. Deploy the upload broker (Apps Script) — ~3 min
 
@@ -55,7 +53,7 @@ it so the events stay isolated. Follow this exactly:
 
    ```js
    const PHOTO_FOLDER_ID = 'PASTE_THIS_EVENTS_FOLDER_ID';   // from step 2
-   const ALLOWED_ORIGINS = ['https://mcbradyk1.github.io'];  // your Pages origin
+   const ALLOWED_ORIGINS = ['https://mcbradyk1.github.io']; // origin only, NO path
    ```
 
 3. **Project Settings (gear icon) → Script Properties → Add script property**,
@@ -89,47 +87,12 @@ siteDomain: "mcbradyk1.github.io/eventname",   // <-- match the repo name!
 
 theme: { primary: "#7a8f6a", secondary: "#8b7db8" },   // pick two colors
 
-features: { photoUpload:true, guestGallery:true, photobooth:false },
+features: { photoUpload:true, guestGallery:true, photobooth:false },  // booth off
 
 endpoints: { photoUpload: "https://script.google.com/…/exec" },  // from step 4
 ```
 
 Commit. That rebrands every page and wires up uploads.
-
-### Changing fonts (optional)
-
-The default titles use **Alex Brush** (bundled locally in `fonts/`). To use a
-different font for a specific event, pull it from **Google Fonts by name** — no
-files to download. In `config.js`'s `theme` block:
-
-1. Add the family name(s) to `googleFonts`.
-2. Reference them in `scriptFont` (titles) and/or `bodyFont` (everything else).
-
-```js
-theme: {
-  googleFonts: ["Playfair Display", "Lora"],          // pulled from Google Fonts
-  scriptFont:  "'Playfair Display', Georgia, serif",  // titles
-  bodyFont:    "'Lora', Georgia, serif",              // body text
-  // ...colors unchanged
-}
-```
-
-**Two rules:** (a) any family named in `scriptFont`/`bodyFont` must also appear
-in `googleFonts` — *except* system fonts like Georgia/Arial, which need no
-entry; (b) spell the family exactly as shown on
-[fonts.google.com](https://fonts.google.com). Leave `googleFonts: []` to keep
-the local Alex Brush default (zero extra network requests).
-
-**Wedding-friendly pairings** (title / body — copy a row):
-
-| Vibe | `scriptFont` (title) | `bodyFont` (body) | `googleFonts` |
-|------|----------------------|-------------------|---------------|
-| Default (bundled) | `'Alex Brush', cursive` | `'Georgia', serif` | `[]` |
-| Classic & elegant | `'Playfair Display', serif` | `'Lora', serif` | `["Playfair Display","Lora"]` |
-| Romantic script | `'Great Vibes', cursive` | `'EB Garamond', serif` | `["Great Vibes","EB Garamond"]` |
-| Modern & clean | `'Cormorant Garamond', serif` | `'Montserrat', sans-serif` | `["Cormorant Garamond","Montserrat"]` |
-| Soft & handwritten | `'Parisienne', cursive` | `'Nunito Sans', sans-serif` | `["Parisienne","Nunito Sans"]` |
-| Bold & timeless | `'Cinzel', serif` | `'Crimson Text', serif` | `["Cinzel","Crimson Text"]` |
 
 ## 6. Go live
 
@@ -142,12 +105,68 @@ the local Alex Brush default (zero extra network requests).
 
 ---
 
+## Photo booth add-on (optional)
+
+Only if this event has a photo booth. It's a **second, parallel pipeline**: its
+own Drive folder, its own secrets, its own sync workflow, feeding the separate
+`photobooth.html` gallery. The booth photos never mix with guest photos. Do this
+*in addition to* the steps above.
+
+### B1. Make a SECOND Drive folder (for booth photos)
+
+1. Create another Drive folder — a **different** one from the guest folder.
+2. **Share it with the same service account** `client_email`, role **Viewer**.
+3. Copy its folder **ID** (from the URL, same as step 2).
+
+### B2. Add the booth secrets
+
+In the event repo: **Settings → Secrets and variables → Actions.** Add:
+
+| Secret | Value |
+|--------|-------|
+| `BOOTH_DRIVE_FOLDER_ID` | the booth folder ID from B1 |
+| `BOOTH_DRIVE_SA_FILE` | the **same** service-account JSON again |
+
+### B3. Turn the feature on in `config.js`
+
+Flip the toggle so the booth tile + `photobooth.html` gallery appear:
+
+```js
+features: { photoUpload:true, guestGallery:true, photobooth:true },  // booth ON
+```
+
+Commit.
+
+### B4. Point the booth PC at the booth folder
+
+Follow **[docs/PHOTOBOOTH_SETUP.md](docs/PHOTOBOOTH_SETUP.md)** on the venue PC:
+
+- Set the booth's post-capture upload to write into the **booth Drive folder**
+  (the B1 folder — *not* the guest folder).
+- Set its `workflow_dispatch` call to trigger **`sync-booth.yml`** in
+  `mcbradyk1/eventname`, using the shared PAT.
+
+Booth photos are auto-captioned "Photobooth" by `sync_booth.py`, so no filename
+convention is needed on the booth PC.
+
+### B5. Test the booth loop
+
+1. Take a test capture on the booth PC → confirm the file lands in the **booth**
+   Drive folder.
+2. **Actions → "Sync Photo Booth Gallery" → Run workflow** (or let the booth's
+   dispatch trigger it).
+3. Confirm it appears on `mcbradyk1.github.io/eventname/photobooth.html` after
+   the deploy.
+
+---
+
 ## Handing off & deleting later
 
 When the event's over and you've given the couple their photos:
 
-1. **Delete the Google Drive folder** (removes the originals).
-2. **Delete the GitHub repo** (removes the site instantly).
+1. **Delete the Google Drive folder(s)** — the guest folder, and the booth
+   folder if you made one. This removes the full-res originals.
+2. **Delete the GitHub repo** (removes the site + thumbnails instantly).
 3. **Delete the event's Apps Script deployment** (or the whole script project).
 
 All independent — deleting one event never affects another. The shared service
@@ -158,9 +177,9 @@ account, PAT, and master `code.gs` stay put for the next event.
 ```
 [ ] Use template → repo named "eventname"
 [ ] Settings → Pages → Source: GitHub Actions
-[ ] Drive folder created + shared with service account
-[ ] Folder ID copied
-[ ] Secrets: GDRIVE_FOLDER_ID, GDRIVE_SA_FILE (+ booth pair if used)
+[ ] Guest Drive folder created + shared with service account
+[ ] Guest folder ID copied
+[ ] Secrets: GDRIVE_FOLDER_ID, GDRIVE_SA_FILE
 [ ] Apps Script: copy code.gs, set PHOTO_FOLDER_ID + ALLOWED_ORIGINS
 [ ] Apps Script: Script Properties GITHUB_PAT + GITHUB_REPO
 [ ] Apps Script: deploy Web app (Me / Anyone) → copy /exec URL
@@ -169,4 +188,13 @@ account, PAT, and master `code.gs` stay put for the next event.
 [ ] (optional) config.js: googleFonts + scriptFont/bodyFont
 [ ] Deploy finished, first sync run, test photo uploaded
 [ ] photoboothSign.html printed
+
+Photo booth (only if used):
+[ ] Second Drive folder created + shared with service account
+[ ] Booth folder ID copied
+[ ] Secrets: BOOTH_DRIVE_FOLDER_ID, BOOTH_DRIVE_SA_FILE
+[ ] config.js: features.photobooth = true
+[ ] Booth PC pointed at booth folder + triggers sync-booth.yml
+[ ] Booth test capture synced + visible on photobooth.html
+```
 ```
