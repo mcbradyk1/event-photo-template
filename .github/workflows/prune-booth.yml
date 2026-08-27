@@ -43,9 +43,9 @@ jobs:
           BOOTH_DRIVE_SA_FILE: /tmp/sa.json
         run: |
           if [ "${{ inputs.dry_run }}" = "true" ]; then
-            python scripts/prune_gallery.py --dry-run
+            python scripts/prune_booth.py --dry-run
           else
-            python scripts/prune_gallery.py
+            python scripts/prune_booth.py
           fi
 
       - name: Commit pruned manifest
