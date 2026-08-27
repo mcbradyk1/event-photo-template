@@ -138,6 +138,7 @@ h1 .subtitle {
   font-size: 34px;
   margin: 28px 0 12px 0;
 }
+.section-title.alt { color: var(--secondary); }
 .hub {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
