@@ -2,7 +2,7 @@
 
 Do this each time you take on a new event. Assumes the **one-time setup** in
 [SETUP.md](SETUP.md) is done (template repo exists, shared service account +
-PAT + Apps Script are ready).
+PAT + Apps Script `code.gs` are ready).
 
 The result is a site at **`mcbradyk1.github.io/eventname`** with its own Drive
 folder, fully isolated from every other event.
@@ -44,14 +44,38 @@ secret.** Add:
 Booth only (if used): also add `BOOTH_DRIVE_FOLDER_ID` and `BOOTH_DRIVE_SA_FILE`
 (the SA JSON is the same file again).
 
-## 4. Point the upload broker at this event
+## 4. Deploy the upload broker (Apps Script) — ~3 min
 
-- **Per-event Apps Script copy:** deploy a copy of `code.gs`, set its
-  `PHOTO_FOLDER_ID` to this event's folder ID and `GITHUB_REPO` to
-  `mcbradyk1/eventname`, add `http://…github.io` (your Pages origin) to
-  `ALLOWED_ORIGINS`, deploy, and copy the `/exec` URL.
-- **Central hub Apps Script:** just add this event's `eventId → folderId` to the
-  allow-list; the `/exec` URL stays the same for all events.
+You keep one master copy of `code.gs`. Each event gets its **own deployment** of
+it so the events stay isolated. Follow this exactly:
+
+1. Go to **[script.google.com](https://script.google.com) → New project** (or
+   open your master `PhotoUploader` project and **Make a copy**).
+2. Paste in your `code.gs`. Near the top, change **these two constants only**:
+
+   ```js
+   const PHOTO_FOLDER_ID = 'PASTE_THIS_EVENTS_FOLDER_ID';   // from step 2
+   const ALLOWED_ORIGINS = ['https://mcbradyk1.github.io'];  // your Pages origin
+   ```
+
+3. **Project Settings (gear icon) → Script Properties → Add script property**,
+   twice:
+
+   | Property | Value |
+   |----------|-------|
+   | `GITHUB_PAT` | your shared PAT (from SETUP step 3) |
+   | `GITHUB_REPO` | `mcbradyk1/eventname` |
+
+4. **Deploy → New deployment → gear icon → Web app.** Set:
+   - **Execute as:** *Me*
+   - **Who has access:** *Anyone*
+   - Click **Deploy**, authorize when prompted, and **copy the `/exec` URL.**
+
+5. In the Apps Script editor, run **`installGalleryFlushTrigger`** once
+   (Run menu → select the function → Run) to install the 5-minute debounce.
+
+> The `/exec` URL is public by design (guests' browsers call it) but keep it out
+> of screenshots. It goes into `config.js` next.
 
 ## 5. Edit `config.js` (the only file you touch)
 
@@ -89,9 +113,10 @@ When the event's over and you've given the couple their photos:
 
 1. **Delete the Google Drive folder** (removes the originals).
 2. **Delete the GitHub repo** (removes the site instantly).
+3. **Delete the event's Apps Script deployment** (or the whole script project).
 
-Both are independent — deleting one event never affects another. The shared
-service account, PAT, and Apps Script stay put for the next event.
+All independent — deleting one event never affects another. The shared service
+account, PAT, and master `code.gs` stay put for the next event.
 
 ## Per-event checklist (copy/paste)
 
@@ -101,7 +126,10 @@ service account, PAT, and Apps Script stay put for the next event.
 [ ] Drive folder created + shared with service account
 [ ] Folder ID copied
 [ ] Secrets: GDRIVE_FOLDER_ID, GDRIVE_SA_FILE (+ booth pair if used)
-[ ] Apps Script pointed at this folder/repo → /exec URL
+[ ] Apps Script: copy code.gs, set PHOTO_FOLDER_ID + ALLOWED_ORIGINS
+[ ] Apps Script: Script Properties GITHUB_PAT + GITHUB_REPO
+[ ] Apps Script: deploy Web app (Me / Anyone) → copy /exec URL
+[ ] Apps Script: run installGalleryFlushTrigger once
 [ ] config.js: eventName, subtitle, eventDate, siteDomain, colors, endpoint
 [ ] Deploy finished, first sync run, test photo uploaded
 [ ] photoboothSign.html printed
