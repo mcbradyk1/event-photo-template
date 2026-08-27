@@ -148,24 +148,35 @@ h1 .subtitle {
 }
 .hub.single { grid-template-columns: 1fr; max-width: 340px; }
 @media (max-width: 600px) { .hub { grid-template-columns: 1fr; } }
+/* ---- Landing-page tiles: solid gradient cards, white text ---- */
 .hub a {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   gap: 4px;
-  padding: 22px 16px;
-  background: rgba(255, 255, 255, 0.85);
-  border: 1px solid var(--primary-soft);
-  border-radius: 16px;
-  box-shadow: 0 2px 8px var(--primary-shadow);
+  padding: 26px 16px;
+  border: none;
+  border-radius: 18px;
   text-decoration: none;
-  color: var(--primary);
-  transition: transform 0.12s;
+  color: #fff;                       /* icon + title inherit white */
+  box-shadow: 0 4px 14px var(--primary-shadow);
+  transition: transform 0.12s, box-shadow 0.12s;
 }
 .hub a:active { transform: translateY(1px); }
-.hub .tile-icon  { font-size: 30px; }
-.hub .tile-title { font-weight: 700; font-size: 17px; }
+.hub a .tile-icon  { font-size: 30px; }
+.hub a .tile-title { font-weight: 700; font-size: 18px; color: #fff; }
+.hub a .tile-sub   { font-size: 13px; font-style: italic;
+                     color: rgba(255, 255, 255, 0.85); }
+
+/* Share = secondary (purple), Browse = primary (green) */
+.share-hub  a { background: linear-gradient(135deg,
+                  var(--secondary) 0%, var(--secondary-dark) 100%);
+                box-shadow: 0 4px 14px var(--secondary-glow); }
+.browse-hub a { background: linear-gradient(135deg,
+                  var(--primary) 0%, var(--primary-dark) 100%);
+                box-shadow: 0 4px 14px var(--primary-shadow); }
+
 .hub .tile-sub   { color: var(--muted); font-size: 13px; font-style: italic; }
 
 /* ---- Gallery grid ---- */
