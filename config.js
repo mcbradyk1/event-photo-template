@@ -20,7 +20,7 @@ window.EVENT_CONFIG = {
    *              "mcbradyk1", the address is:  mcbradyk1.github.io/eventname
    *              (no https://, no trailing slash — the QR sign adds those).
    */
-  eventName:  "Kyle & Elly",
+  eventName:  "Your Event Name Here",
   subtitle:   "Share Your Photos",
   eventDate:  "August 8th, 2026",
   siteDomain: "mcbradyk1.github.io/eventname",
@@ -78,6 +78,7 @@ window.EVENT_CONFIG = {
     text:       "#4a4a4a",
     muted:      "#999999",
 
+    googleFonts: [], // e.g. ["Playfair Display", "Lora"]
     scriptFont: "'Alex Brush', Georgia, cursive",        // the fancy title font
     bodyFont:   "'Georgia', 'Times New Roman', serif",   // everything else
   },
