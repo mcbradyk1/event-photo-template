@@ -24,13 +24,42 @@
   /* ---- Phase 1: theme (runs synchronously, before body paints) ---------- */
   var root = document.documentElement;
   function setVar(name, val) { if (val != null) root.style.setProperty(name, val); }
+  /* ---- Phase 1: theme colors, with JS-derived tints (no color-mix needed) --- */
+  function hexToRgb(h) {
+    h = String(h).trim().replace('#', '');
+    if (h.length === 3) h = h.split('').map(function (c){ return c + c; }).join('');
+    var n = parseInt(h, 16);
+    return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+  }
+  function rgba(hex, a) {
+    var c = hexToRgb(hex);
+    return 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + a + ')';
+  }
+  function darken(hex, keep) {           // keep=0.82 -> 82% of the color, toward black
+    var c = hexToRgb(hex);
+    var f = function (v){ return Math.round(v * keep); };
+    return 'rgb(' + f(c.r) + ',' + f(c.g) + ',' + f(c.b) + ')';
+  }
+  
+  var primary   = T.primary   || '#7a8f6a';
+  var secondary = T.secondary || '#8b7db8';
+  
   setVar('--cfg-script-font', T.scriptFont);
   setVar('--cfg-body-font',   T.bodyFont);
-  setVar('--cfg-primary',     T.primary);
-  setVar('--cfg-secondary',   T.secondary);
-  setVar('--cfg-background',  T.background);
-  setVar('--cfg-text',        T.text);
-  setVar('--cfg-muted',       T.muted);
+  setVar('--cfg-background',   T.background);
+  setVar('--cfg-text',         T.text);
+  setVar('--cfg-muted',        T.muted);
+  
+  // Base colors
+  setVar('--primary',   primary);
+  setVar('--secondary', secondary);
+  // Derived shades — these override the color-mix() versions in shared.css
+  setVar('--primary-dark',    darken(primary, 0.82));
+  setVar('--primary-soft',    rgba(primary, 0.40));
+  setVar('--primary-shadow',  rgba(primary, 0.25));
+  setVar('--secondary-dark',  darken(secondary, 0.80));
+  setVar('--secondary-soft',  rgba(secondary, 0.30));
+  setVar('--secondary-glow',  rgba(secondary, 0.40));
 
   /* ---- Optional: load fonts from Google Fonts by name ------------------ */
   var gfonts = T.googleFonts || [];
