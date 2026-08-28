@@ -3,6 +3,16 @@
   var LIGHTBOX_INDEX = 0;
   var LIGHTBOX_SCROLL_Y = 0;
   var LIGHTBOX_HISTORY = false;
+  
+  // Event-specific accent emoji from config.js.
+  // Falls back to a white heart if config.js is missing or incomplete.
+  var themeHeart =
+    window.EVENT_CONFIG &&
+    window.EVENT_CONFIG.text &&
+    window.EVENT_CONFIG.text.heart
+      ? window.EVENT_CONFIG.text.heart
+      : '\uD83E\uDD0D';
+
 
   // Set per-page (gallery.html vs photobooth.html). Falls back to guest defaults.
   var manifestUrl = window.MANIFEST_URL || 'manifest.json';
@@ -16,7 +26,7 @@
   var loadingTimer = setTimeout(function () {
     var g = document.getElementById('g');
     if (!g.hasChildNodes()) {
-      g.innerHTML = '<div class="empty">Loading photos\u2026</div>';
+      g.innerHTML = '<div class="empty">Photos coming soon ' + themeHeart + '</div>';
     }
   }, 300);
 
@@ -78,7 +88,9 @@
     .catch(function () {
       clearTimeout(loadingTimer);
       document.getElementById('g').innerHTML =
-        '<div class="empty">Gallery is warming up \u2014 check back soon \uD83D\uDC9A</div>';
+        '<div class="empty">Gallery is warming up \u2014 check back soon ' +
+        themeHeart +
+        '</div>';
     });
 
   function openLightbox(index) {
