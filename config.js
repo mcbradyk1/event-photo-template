@@ -71,12 +71,16 @@ window.EVENT_CONFIG = {
    * Any CSS color works ("#7a8f6a", "rebeccapurple", "rgb(...)").
    */
   theme: {
-    primary:    "#7a8f6a",   // eucalyptus green
-    secondary:  "#8b7db8",   // soft purple
-
-    background: "#fdfdfb",
-    text:       "#4a4a4a",
-    muted:      "#999999",
+    primary:    "#626A78",   // slate blue-gray
+    secondary:  "#D8BD86",   // warm gold
+  
+    background: "#171717",   // page background
+    surface:    "#22252B",   // cards and upload box
+    surfaceAlt: "#2B2F37",   // inputs and secondary surfaces
+    onSurface:  "#F2ECE2",   // text displayed on dark surfaces
+  
+    text:       "#E8E1D8",
+    muted:      "#B5AEA5",
 
     googleFonts: [], // e.g. ["Playfair Display", "Lora"]
     scriptFont: "'Alex Brush', Georgia, cursive",        // the fancy title font
