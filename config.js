@@ -63,29 +63,63 @@ window.EVENT_CONFIG = {
     photobooth:   false,   // off by default — turn on only if you run a booth
   },
 
-  /* ---- 4. Colors & fonts --------------------------------------------------
-   * Pick TWO colors. Everything (titles, buttons, progress bar, glows) is
-   * derived from them automatically — you don't have to match shades.
-   *   primary   = titles, "Choose Photos" button, home link
-   *   secondary = the Upload button and progress bar
-   * Any CSS color works ("#7a8f6a", "rebeccapurple", "rgb(...)").
+  /* ---- 4. Theme ------------------------------------------------------------
+   * Everything visual is controlled from this section.
+   *
+   * Colors:
+   *   primary      = Browse gallery cards, headings, links
+   *   secondary    = Share/upload cards, buttons, highlights
+   *
+   * Surfaces:
+   *   background   = page background
+   *   surface      = cards, panels, upload box
+   *   surfaceAlt   = inputs, secondary surfaces
+   *   onSurface    = text displayed on surfaces
+   *
+   * Text:
+   *   text         = main page text
+   *   muted        = secondary/help text
+   *
+   * Fonts:
+   *   googleFonts  = optional Google Fonts to load
+   *   scriptFont   = large decorative headings
+   *   bodyFont     = normal body text
+   *
+   * branding.js automatically derives darker shades, glows, borders,
+   * button gradients and shadows from the primary and secondary colors.
+   * Most events only need to customize this block.
    */
   theme: {
     primary:    "#626A78",   // slate blue-gray
     secondary:  "#D8BD86",   // warm gold
-  
+
     background: "#171717",   // page background
     surface:    "#22252B",   // cards and upload box
     surfaceAlt: "#2B2F37",   // inputs and secondary surfaces
     onSurface:  "#F2ECE2",   // text displayed on dark surfaces
-  
+
     text:       "#E8E1D8",
     muted:      "#B5AEA5",
 
     googleFonts: [], // e.g. ["Playfair Display", "Lora"]
-    scriptFont: "'Alex Brush', Georgia, cursive",        // the fancy title font
-    bodyFont:   "'Georgia', 'Times New Roman', serif",   // everything else
+    scriptFont: "'Alex Brush', Georgia, cursive",
+    bodyFont:   "'Georgia', 'Times New Roman', serif",
   },
+
+   /* Common wedding styles:
+   *
+   * Classic:
+   *   primary:"#6A7280", secondary:"#D8C8A8"
+   *
+   * Dark elegant:
+   *   primary:"#626A78", secondary:"#D8BD86"
+   *
+   * Sage & cream:
+   *   primary:"#7A8F6A", secondary:"#D8C8A8"
+   *
+   * Dusty blue:
+   *   primary:"#6B7C93", secondary:"#D6C9AF"
+   */
 
   /* ---- 5. Your upload link  (public — NOT a secret) ----------------------
    * Paste the Apps Script Web App /exec URL here after you deploy it
