@@ -1,11 +1,29 @@
 /* ============================================================================
- *  shared.css — styling for every page.
+ *  shared.css — shared styling for all pages.
  *
- *  You pick TWO colors in config.js (primary + secondary). Everything else
- *  here — darker button shades, soft borders, glows — is DERIVED from those
- *  two with color-mix(), so the palette always stays coordinated.
- *  The values after each var() fallback are the original wedding palette,
- *  so the site still looks right even with JavaScript disabled.
+ *  Theme values come from config.js:
+ *
+ *      primary      - main accent color
+ *      secondary    - supporting accent color
+ *      background   - page background
+ *      surface      - cards, upload boxes, panels
+ *      surfaceAlt   - inputs and secondary surfaces
+ *      onSurface    - text shown on dark surfaces
+ *      text         - normal page text
+ *      muted        - secondary text
+ *      scriptFont   - headings and decorative text
+ *      bodyFont     - normal text
+ *
+ *  branding.js injects these values as CSS variables before the page paints.
+ *  It also derives darker shades, glows, borders and shadows from the two
+ *  accent colors so each event can be fully re-themed from config.js without
+ *  editing CSS.
+ *
+ *  Design goals:
+ *    • One place to re-theme an event (config.js)
+ *    • Light and dark themes supported
+ *    • Wedding-specific styling with minimal per-event work
+ *    • Sensible fallbacks if JavaScript is disabled
  * ========================================================================== */
 
 @font-face {
@@ -20,7 +38,7 @@
   --script-font: var(--cfg-script-font, 'Alex Brush', Georgia, cursive);
   --body-font:   var(--cfg-body-font, 'Georgia', 'Times New Roman', serif);
 
-  /* The two configured colors */
+  /* Core theme colors from config.js */
   --primary:   var(--cfg-primary, #7a8f6a);
   --secondary: var(--cfg-secondary, #8b7db8);
 
@@ -151,6 +169,10 @@ h1 .subtitle {
   margin: 0 auto 8px auto;
 }
 .hub.single { grid-template-columns: 1fr; max-width: 340px; }
+.browse-hub {
+  grid-template-columns: 1fr;
+  max-width: 340px;
+}
 @media (max-width: 600px) { .hub { grid-template-columns: 1fr; } }
 /* ---- Landing-page tiles: solid gradient cards, white text ---- */
 .hub a {
